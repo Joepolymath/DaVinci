@@ -14,9 +14,9 @@ var (
 )
 
 func parseEnv() error {
-	err := godotenv.Overload()
+	err := godotenv.Overload("backend/.env")
 	if err != nil {
-		log.Fatalf("Failed to load .env file: %v", err)
+		log.Printf("No .env file loaded: %v", err)
 	}
 	return nil
 }
