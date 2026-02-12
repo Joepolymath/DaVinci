@@ -7,6 +7,9 @@ LIBS_DIR := libs
 INFRA_DIR := infra
 TOOLS_DIR := tools
 
+# Cargo environment (rustup installs to ~/.cargo)
+CARGO_ENV := . "$(HOME)/.cargo/env" 2>/dev/null;
+
 # Apps
 SCRIBEQUERY_DIR := $(APPS_DIR)/scribequery
 SYSTEM_AGENT_DIR := $(APPS_DIR)/system-agent
@@ -16,6 +19,7 @@ BRAIN_PROXY_DIR := $(APPS_DIR)/brain-proxy
 # Libraries
 PROTO_DIR := $(LIBS_DIR)/proto
 SHARED_GO_DIR := $(LIBS_DIR)/shared-go
+SHARED_RUST_DIR := $(LIBS_DIR)/shared-rust
 SHARED_TS_DIR := $(LIBS_DIR)/shared-ts
 
 .PHONY: help
@@ -67,7 +71,7 @@ clean-scribequery: ## Clean ScribeQuery binaries
 build-system-agent: ## Build System Agent service
 	@echo "Building System Agent..."
 	@if [ -f "$(SYSTEM_AGENT_DIR)/Cargo.toml" ]; then \
-		cd $(SYSTEM_AGENT_DIR) && cargo build --release; \
+		$(CARGO_ENV) cd $(SYSTEM_AGENT_DIR) && cargo build --release; \
 	elif [ -f "$(SYSTEM_AGENT_DIR)/go.mod" ]; then \
 		cd $(SYSTEM_AGENT_DIR) && go build -o bin/system-agent ./cmd; \
 	else \
@@ -76,7 +80,7 @@ build-system-agent: ## Build System Agent service
 
 run-system-agent: ## Run System Agent service
 	@if [ -f "$(SYSTEM_AGENT_DIR)/Cargo.toml" ]; then \
-		cd $(SYSTEM_AGENT_DIR) && cargo run; \
+		$(CARGO_ENV) cd $(SYSTEM_AGENT_DIR) && cargo run; \
 	elif [ -f "$(SYSTEM_AGENT_DIR)/go.mod" ]; then \
 		cd $(SYSTEM_AGENT_DIR) && go run ./cmd; \
 	else \
@@ -85,7 +89,7 @@ run-system-agent: ## Run System Agent service
 
 test-system-agent: ## Test System Agent service
 	@if [ -f "$(SYSTEM_AGENT_DIR)/Cargo.toml" ]; then \
-		cd $(SYSTEM_AGENT_DIR) && cargo test; \
+		$(CARGO_ENV) cd $(SYSTEM_AGENT_DIR) && cargo test; \
 	elif [ -f "$(SYSTEM_AGENT_DIR)/go.mod" ]; then \
 		cd $(SYSTEM_AGENT_DIR) && go test ./...; \
 	fi
@@ -156,20 +160,42 @@ clean-brain-proxy: ## Clean Brain Proxy binaries
 # Shared Libraries
 # ============================================================================
 
-.PHONY: build-libs test-libs clean-libs
+.PHONY: build-libs test-libs clean-libs build-shared-rust run-shared-rust test-shared-rust clean-shared-rust
 build-libs: ## Build all shared libraries
 	@echo "Building shared libraries..."
 	@if [ -f "$(SHARED_GO_DIR)/go.mod" ]; then \
 		cd $(SHARED_GO_DIR) && go build ./...; \
+	fi
+	@if [ -f "$(SHARED_RUST_DIR)/Cargo.toml" ]; then \
+		$(CARGO_ENV) cd $(SHARED_RUST_DIR) && cargo build; \
 	fi
 
 test-libs: ## Test all shared libraries
 	@if [ -f "$(SHARED_GO_DIR)/go.mod" ]; then \
 		cd $(SHARED_GO_DIR) && go test ./...; \
 	fi
+	@if [ -f "$(SHARED_RUST_DIR)/Cargo.toml" ]; then \
+		$(CARGO_ENV) cd $(SHARED_RUST_DIR) && cargo test; \
+	fi
 
 clean-libs: ## Clean shared library build artifacts
 	@find $(LIBS_DIR) -name "*.pb.go" -delete
+	@if [ -d "$(SHARED_RUST_DIR)/target" ]; then \
+		$(CARGO_ENV) cd $(SHARED_RUST_DIR) && cargo clean; \
+	fi
+
+build-shared-rust: ## Build shared-rust library
+	@echo "Building shared-rust..."
+	@$(CARGO_ENV) cd $(SHARED_RUST_DIR) && cargo build
+
+run-shared-rust: ## Run shared-rust binary
+	@$(CARGO_ENV) cd $(SHARED_RUST_DIR) && cargo run
+
+test-shared-rust: ## Test shared-rust library
+	@$(CARGO_ENV) cd $(SHARED_RUST_DIR) && cargo test
+
+clean-shared-rust: ## Clean shared-rust build artifacts
+	@$(CARGO_ENV) cd $(SHARED_RUST_DIR) && cargo clean
 
 # ============================================================================
 # Infrastructure
@@ -215,7 +241,7 @@ install-rust-package: ## Install a Rust dependency (usage: make install-rust-pac
 		exit 1; \
 	fi
 	@if [ -f "$(SYSTEM_AGENT_DIR)/Cargo.toml" ]; then \
-		cd $(SYSTEM_AGENT_DIR) && cargo add $(package); \
+		$(CARGO_ENV) cd $(SYSTEM_AGENT_DIR) && cargo add $(package); \
 	fi
 
 install-ts-package: ## Install a TypeScript package (usage: make install-ts-package package=react)
