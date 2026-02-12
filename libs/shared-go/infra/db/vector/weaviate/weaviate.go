@@ -76,3 +76,4 @@ func (cfg WeaviateConfig) authConfig() auth.Config {
 	}
 	return auth.ApiKey{Value: cfg.APIKey}
 }
+

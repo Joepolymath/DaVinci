@@ -170,3 +170,4 @@ func (cfg PineconeConfig) validate() error {
 	}
 	return nil
 }
+

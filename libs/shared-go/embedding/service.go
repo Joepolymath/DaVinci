@@ -71,3 +71,4 @@ func (s *embeddingService) CreateEmbeddings(ctx context.Context, texts []string)
 
 	return embedding, nil
 }
+

@@ -66,3 +66,4 @@ type CollectionInfo struct {
 	IndexedVectorsCount uint64 `json:"indexed_vectors_count"`
 	PointsCount         uint64 `json:"points_count"`
 }
+

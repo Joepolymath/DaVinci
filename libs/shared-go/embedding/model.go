@@ -19,3 +19,4 @@ type CreateEmbeddingsResponse struct {
 	Embeddings []Embedding `json:"embeddings"`
 	Dimension  int         `json:"dimension"`
 }
+

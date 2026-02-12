@@ -9,10 +9,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Joepolymath/DaVinci/apps/scribequery/internal/config"
-	vector "github.com/Joepolymath/DaVinci/apps/scribequery/internal/infra/db/vector/pinecone"
 	"github.com/Joepolymath/DaVinci/apps/scribequery/internal/router"
 	sharedgo "github.com/Joepolymath/DaVinci/libs/shared-go"
+	"github.com/Joepolymath/DaVinci/libs/shared-go/config"
+	vector "github.com/Joepolymath/DaVinci/libs/shared-go/infra/db/vector/pinecone"
 	"go.uber.org/zap"
 )
 

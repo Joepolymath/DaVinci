@@ -3,7 +3,7 @@ package embeddings
 import (
 	"context"
 
-	"github.com/Joepolymath/DaVinci/apps/scribequery/internal/embedding"
+	"github.com/Joepolymath/DaVinci/libs/shared-go/embedding"
 )
 
 type EmbeddingProvider struct {
@@ -25,3 +25,4 @@ func (p *EmbeddingProvider) CreateEmbeddings(ctx context.Context, texts []string
 func (p *EmbeddingProvider) IsEnabled() bool {
 	return p.client != nil && p.client.IsEnabled()
 }
+

@@ -175,3 +175,4 @@ func (c *Client) CreateEmbedding(ctx context.Context, input string) ([]float32, 
 func (c *Client) IsEnabled() bool {
 	return c.enabled
 }
+

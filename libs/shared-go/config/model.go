@@ -8,3 +8,4 @@ type Config struct {
 	WeaviateGrpcHost string `mapstructure:"WEAVIATE_GRPC_HOST"`
 	ORIGINS          string `mapstructure:"ORIGINS"`
 }
+

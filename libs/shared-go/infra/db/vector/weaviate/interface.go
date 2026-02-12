@@ -17,3 +17,4 @@ type Service interface {
 type Client interface {
 	Health(ctx context.Context) error
 }
+

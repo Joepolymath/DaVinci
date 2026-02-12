@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"os"
 	"sync"
 
@@ -13,17 +14,22 @@ var (
 )
 
 func parseEnv() error {
-	paths := []string{".env", "backend/.env"}
+	paths := []string{".env", "../.env", "../../.env", "apps/scribequery/.env"}
 	var lastErr error
 	for _, path := range paths {
 		if err := godotenv.Overload(path); err == nil {
+			log.Printf("Loaded environment variables from %s", path)
 			return nil
 		} else {
 			lastErr = err
 		}
 	}
 
-	return lastErr
+	// If no .env file found, that's okay - we'll use environment variables directly
+	if lastErr != nil {
+		log.Printf("No .env file found, using environment variables directly")
+	}
+	return nil
 }
 
 func loadConfig() *Config {

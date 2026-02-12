@@ -291,3 +291,4 @@ func pointFromObject(obj *models.Object, withPayload, withVector bool) Point {
 	}
 	return p
 }
+

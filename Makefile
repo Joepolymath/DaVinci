@@ -48,13 +48,13 @@ proto-clean: ## Clean generated proto code
 .PHONY: build-scribequery run-scribequery clean-scribequery test-scribequery
 build-scribequery: ## Build ScribeQuery service
 	@echo "Building ScribeQuery..."
-	@cd $(SCRIBEQUERY_DIR) && go build -o bin/scribequery ./cmd
+	@go build -o bin/scribequery ./$(SCRIBEQUERY_DIR)/cmd/main.go
 
 run-scribequery: ## Run ScribeQuery service
-	@cd $(SCRIBEQUERY_DIR) && go run ./cmd
+	@go run ./$(SCRIBEQUERY_DIR)/cmd/main.go
 
 test-scribequery: ## Test ScribeQuery service
-	@cd $(SCRIBEQUERY_DIR) && go test ./...
+	@go test ./$(SCRIBEQUERY_DIR)/...
 
 clean-scribequery: ## Clean ScribeQuery binaries
 	@rm -rf $(SCRIBEQUERY_DIR)/bin
