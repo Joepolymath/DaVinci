@@ -1,1 +1,0 @@
-# ScribeQuery Frontend

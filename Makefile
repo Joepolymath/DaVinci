@@ -13,7 +13,7 @@ CARGO_ENV := . "$(HOME)/.cargo/env" 2>/dev/null;
 # Apps
 SCRIBEQUERY_DIR := $(APPS_DIR)/scribequery
 SYSTEM_AGENT_DIR := $(APPS_DIR)/system-agent
-UI_DASHBOARD_DIR := $(APPS_DIR)/ui-dashboard
+UI_DASHBOARD_DIR := $(APPS_DIR)/ui
 BRAIN_PROXY_DIR := $(APPS_DIR)/brain-proxy
 
 # Libraries
@@ -122,7 +122,7 @@ dev-ui: ## Run UI Dashboard (development)
 
 install-ui: ## Install UI Dashboard dependencies
 	@if [ -f "$(UI_DASHBOARD_DIR)/package.json" ]; then \
-		cd $(UI_DASHBOARD_DIR) && npm install; \
+		cd $(UI_DASHBOARD_DIR) && pnpm install; \
 	fi
 
 clean-ui: ## Clean UI Dashboard build artifacts
