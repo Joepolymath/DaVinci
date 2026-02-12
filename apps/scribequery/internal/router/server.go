@@ -8,6 +8,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/Joepolymath/DaVinci/apps/scribequery/internal/handlers"
 	"github.com/Joepolymath/DaVinci/libs/shared-go/config"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -38,12 +39,12 @@ func InitRouterWithConfig(cfg *config.Config) *fiber.App {
 
 func RunWithGracefulShutdown(app *fiber.App, cfg *config.Config) error {
 	go func() {
-		if err := app.Listen("0.0.0.0:" + cfg.Port); err != nil {
+		if err := app.Listen("0.0.0.0:" + cfg.ScribeQueryPort); err != nil {
 			log.Fatalf("Failed to start server: %v", err)
 		}
 	}()
 
-	log.Println("🚀 🚀 Server is running on port", cfg.Port)
+	log.Println("🚀 🚀 Server is running on port", cfg.ScribeQueryPort)
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
@@ -56,6 +57,17 @@ func RunWithGracefulShutdown(app *fiber.App, cfg *config.Config) error {
 	}
 
 	fmt.Println("Server shutdown complete.")
+
+	return nil
+}
+
+func InitHandlers(env *handlers.Environment, handlers []handlers.IHandler) error {
+
+	for _, handler := range handlers {
+		if err := handler.Init("/api", env); err != nil {
+			return fmt.Errorf("failed to initialize handler: %v", err)
+		}
+	}
 
 	return nil
 }

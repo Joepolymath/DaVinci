@@ -9,6 +9,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/Joepolymath/DaVinci/apps/scribequery/app"
+	"github.com/Joepolymath/DaVinci/apps/scribequery/internal/handlers"
+	"github.com/Joepolymath/DaVinci/apps/scribequery/internal/handlers/chat"
 	"github.com/Joepolymath/DaVinci/apps/scribequery/internal/router"
 	sharedgo "github.com/Joepolymath/DaVinci/libs/shared-go"
 	"github.com/Joepolymath/DaVinci/libs/shared-go/config"
@@ -60,10 +63,25 @@ func main() {
 		logger.Info("Index created successfully")
 	}
 
-	app := router.InitRouterWithConfig(cfg)
+	services := app.InitServices(cfg, logger)
+	if services == nil {
+		logger.Error("Failed to initialize services")
+		return
+	}
+
+	appEnv := router.InitRouterWithConfig(cfg)
+
+	env := handlers.NewEnvironment(cfg, appEnv, logger, services)
+
+	if err := router.InitHandlers(env, []handlers.IHandler{
+		&chat.Handler{},
+	}); err != nil {
+		logger.Error("Failed to initialize handlers", zap.Error(err))
+		return
+	}
 
 	go func() {
-		router.RunWithGracefulShutdown(app, cfg)
+		router.RunWithGracefulShutdown(appEnv, cfg)
 	}()
 
 	quit := make(chan os.Signal, 1)

@@ -36,7 +36,7 @@ func loadConfig() *Config {
 	parseEnv()
 
 	return &Config{
-		Port:             os.Getenv("PORT"),
+		ScribeQueryPort:  os.Getenv("SCRIBE_QUERY_PORT"),
 		WeaviateScheme:   os.Getenv("WEAVIATE_SCHEME"),
 		WeaviateHost:     os.Getenv("WEAVIATE_HOST"),
 		WeaviateAPIKey:   os.Getenv("WEAVIATE_API_KEY"),
